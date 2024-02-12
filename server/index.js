@@ -1,5 +1,4 @@
 require('dotenv').config();
-const routes = require('./routes/routes');
 
 
 
@@ -10,10 +9,12 @@ const express = require('express');
 const mongoose = require('mongoose');
 
 const app = express();
-app.use('/api', routes)
+
+const router = express.Router()
+module.exports = router;
 
 app.use(express.json());
-
+app.use("/api", router);
 
 
 
@@ -28,8 +29,14 @@ database.once('connected', () => {
     console.log('Database Connected');
 })
 
-
-
 app.listen(8080, () => {
     console.log(`Server Started at ${8080}`)
 })
+
+
+
+router.get('/getAll', async (req, res) => {
+    let collection = await database.collection("cars")
+    res.json(collection("cars").find({}))
+})
+
